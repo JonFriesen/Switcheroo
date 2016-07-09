@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>Switcheroo Sandbox</title>
+        <script src="switcheroo.js"></script>
+        <script>
+            window.onload = function() {
+                var genericAction = function(myObject) {
+                    alert(myObject.message);
+                };
+                this.data = [
+                    {
+                        category: 'friend',
+                        name: 'alice',
+                        message: 'hello friends',
+                        action: genericAction
+                    },
+                    {
+                        category: 'friend',
+                        name: 'alex',
+                        message: 'hello friends',
+                        action: genericAction
+                    }
+                ];
+                this.Switcheroo = new Switcheroo({
+                    data: this.data,
+                    keyBindings: {
+                        open: ['Control','Shift','F'],
+                        close: ['Escape']
+                    }
+                 });
+            }
+        </script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+    </body>
+</html>
