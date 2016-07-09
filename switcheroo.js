@@ -2,16 +2,16 @@
 
 (function(window){
     Switcheroo = function(settings) {
-        this.testData = settings.data;
+        this.optionData = settings.data;
         this.isOpen = true;
         this.settings = settings;
-  
+
         // Switcheroo Container
         var switcherooContainer = document.createElement('div');
         switcherooContainer.setAttribute('id', 'switcheroo');
         this.switcherooContainer = switcherooContainer;
         document.body.appendChild(this.switcherooContainer);
-        
+
         // Search Container
         var searchContainer = document.createElement('div');
         searchContainer.setAttribute('id', 'switcheroo-container');
@@ -28,7 +28,7 @@
         this.searchContainer.appendChild(this.searchField);
         this.searchField.focus();
 
-        // Search Results 
+        // Search Results
         var searchResults = document.createElement('div');
         searchResults.setAttribute('id', 'switcheroo-results');
         this.searchResults = searchResults;
@@ -39,13 +39,14 @@
         // Return Switcheroo object
         return this;
     };
-    
+
     Switcheroo.prototype.open = function() {
         // Check if open
         if(!this.isOpen) {
             // Open
             this.switcherooContainer.style.display = 'unset';
             this.isOpen = true;
+            this.searchField.focus();
         }
     };
 
@@ -55,6 +56,7 @@
             // Close
             this.switcherooContainer.style.display = 'none';
             this.isOpen = false;
+            this.searchField.value = '';
         }
     };
 
@@ -70,7 +72,7 @@
          Switcheroo.searchResults.innerHTML = '';
          Switcheroo.currentSearchResults = [];
          if (!result || result === '') { return; }
-         this.testData.forEach(function(option, index) {
+         this.optionData.forEach(function(option, index) {
             if (option.name.startsWith(result)) {
                 var newOption = document.createElement('label');
                 newOption.className += 'switcheroo-option';
@@ -87,29 +89,32 @@
     };
 
     Switcheroo.prototype.getData = function() {
-        return this.testData;  
+        return this.optionData;
     };
 
     Switcheroo.prototype.registerKeyPresses = function() {
-        
-        // Map open/close combos 
+        // Map open/close combos
+        if(!this.keyBindingMap) this.keyBindingMap = {};
         document.onkeydown = function(evt) {
-            if(!this.keyMapOpen) this.keyMapOpen = {};
-            this.keyMapOpen[evt.key] = true;
+            evt = evt || window.event;
+
+            this.keyBindingMap[evt.key] = true;
 
             // Register open command
             if(!this.isOpen){
                 var openCombo = this.settings.keyBindings.open;
                 var isSatisfied = openCombo.every(function(key) {
-                    return (key in this.keyMapOpen && this.keyMapOpen[key] === true);
+                    return (key in this.keyBindingMap && this.keyBindingMap[key] === true);
                 }.bind(this));
                 if(isSatisfied) {
-                   this.open(); 
+                    this.open();
                 }
-            } else {
+            }
+            // Register close command
+            else {
                var closeCombo = this.settings.keyBindings.close;
                var isSatisfied = closeCombo.every(function(key) {
-                    return (key in this.keyMapOpen && this.keyMapOpen[key] === true);
+                    return (key in this.keyBindingMap && this.keyBindingMap[key] === true);
                }.bind(this));
                if(isSatisfied) {
                     this.close();
@@ -117,36 +122,27 @@
             }
         }.bind(this);
         document.onkeyup = function(evt) {
-            if(evt.key in this.keyMapOpen) {
-                this.keyMapOpen[evt.key] = false;
-            }
             evt = evt || window.event;
+            if(evt.key in this.keyBindingMap) {
+                this.keyBindingMap[evt.key] = false;
+            }
+
+            if(!this.isOpen) { return; }
 
             switch (evt.key) {
-                // Escape for exit
-                case 'Escape':
-                    console.log('Exiting');
-                    break;
                 // Enter for submit
                 case 'Enter':
-                    console.log('Submitting');
                     this.selectResult();
-                    break;
-                // Tab for complete
-                case 'Tab':
-                    console.log('Tab Completing');
                     break;
                 // Arrow keys for navigation
                 case 'ArrowUp':
                 case 'ArrowDown':
                 case 'ArrowLeft':
                 case 'ArrowRight':
-                    console.log('Navigating');
                     this.navigate(evt.key);
                     break;
                 default:
                     this.autoFocusField(evt);
-
             }
         }.bind(this);
     }
@@ -156,7 +152,11 @@
             if (typeof evt.which == "undefined") {
                 return true;
             } else if (typeof evt.which == "number" && evt.which > 0) {
-                return !evt.ctrlKey && !evt.metaKey && !evt.altKey && evt.which != 8;
+                return !evt.ctrlKey
+                        && !evt.metaKey
+                        && !evt.altKey
+                        && evt.which != 8
+                        && evt.key.length === 1;
             }
             return false;
         };

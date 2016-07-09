@@ -3,8 +3,7 @@ body {
 }
 
 #switcheroo {
-    background-color: #2f343f;
-    opacity: 0.8;
+    background-color: rgba(18, 20, 25, 0.8);
     position: fixed;
     top: 0;
     left: 0;
@@ -12,7 +11,7 @@ body {
     width: 100%;
 }
 
-#switcheroo-container { 
+#switcheroo-container {
     width: 500px;
     height: 60%;
     margin: auto;
@@ -33,7 +32,7 @@ body {
     padding-left: 10px;
     font-size: 50px;
     color: #f3f4f5;
-    background: #2f343f;
+    background-color: rgba(18, 20, 25, 0);
     border: none;
 }
 
