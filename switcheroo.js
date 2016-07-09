@@ -57,6 +57,7 @@
             this.switcherooContainer.style.display = 'none';
             this.isOpen = false;
             this.searchField.value = '';
+            this.updateSearchResults();
         }
     };
 
