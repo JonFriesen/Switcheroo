@@ -1,16 +1,51 @@
 
 
 (function(window){
-    Switcheroo = function(settings) {
-        this.optionData = settings.data;
+    Switcheroo = function(params) {
+        this.optionData = params.data;
         this.isOpen = true;
-        this.settings = settings;
+        this.params = {
+            data: [],
+            keyBindings: {
+                open: ['Control','Shift','F'],
+                close: ['Escape']
+            },
+            text: {
+                closeButton: 'Close',
+                searchField: 'Start Typing...'
+            },
+            showCategories: true,
+            prioritizeCategoricalSort: true,
+            closeOnSelect: true
+        };
+
+        function setUserParams(defaultParams, userParams) {
+              for (var params in userParams) {
+                  if (userParams[params].constructor == Object) {
+                      if (defaultParams[params]) {
+                          setUserParams(defaultParams[params], userParams[params]);
+                          continue;
+                      }
+                  }
+                  defaultParams[params] = userParams[params];
+              }
+            };
+
+        setUserParams(this.params, params);
 
         // Switcheroo Container
         var switcherooContainer = document.createElement('div');
         switcherooContainer.setAttribute('id', 'switcheroo');
         this.switcherooContainer = switcherooContainer;
         document.body.appendChild(this.switcherooContainer);
+
+        // Escape button
+        var removalButton = document.createElement('button');
+        removalButton.setAttribute('id', 'switcheroo-removebutton');
+        removalButton.innerHTML = 'Close';
+        removalButton.onclick = function() { this.close(); }.bind(this);
+        this.removalButton = removalButton;
+        this.switcherooContainer.appendChild(removalButton);
 
         // Search Container
         var searchContainer = document.createElement('div');
@@ -33,7 +68,6 @@
         searchResults.setAttribute('id', 'switcheroo-results');
         this.searchResults = searchResults;
         this.searchContainer.appendChild(this.searchResults);
-
         this.registerKeyPresses();
 
         // Return Switcheroo object
@@ -78,14 +112,14 @@
                 var newOption = document.createElement('label');
                 newOption.className += 'switcheroo-option';
                 //if (index === 0) { newOption.className += ' switcheroo-selected'; }
-                newOption.innerHTML = option.category + ': ' + option.name;
+                newOption.innerHTML = (this.params.showCategories ? option.category + ': ' : '') + option.name;
                 Switcheroo.searchResults.appendChild(newOption);
                 Switcheroo.currentSearchResults.push({
                             element: newOption,
                             option: option
                         });
             }
-         });
+         }.bind(this));
 
     };
 
@@ -103,7 +137,7 @@
 
             // Register open command
             if(!this.isOpen){
-                var openCombo = this.settings.keyBindings.open;
+                var openCombo = this.params.keyBindings.open;
                 var isSatisfied = openCombo.every(function(key) {
                     return (key in this.keyBindingMap && this.keyBindingMap[key] === true);
                 }.bind(this));
@@ -113,7 +147,7 @@
             }
             // Register close command
             else {
-               var closeCombo = this.settings.keyBindings.close;
+               var closeCombo = this.params.keyBindings.close;
                var isSatisfied = closeCombo.every(function(key) {
                     return (key in this.keyBindingMap && this.keyBindingMap[key] === true);
                }.bind(this));
