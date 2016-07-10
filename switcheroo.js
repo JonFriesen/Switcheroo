@@ -104,8 +104,8 @@
     };
 
     Switcheroo.prototype.updateSearchResults = function(result) {
-         Switcheroo.searchResults.innerHTML = '';
-         Switcheroo.currentSearchResults = [];
+         this.searchResults.innerHTML = '';
+         this.currentSearchResults = [];
          if (!result || result === '') { return; }
          this.optionData.forEach(function(option, index) {
             if (option.name.startsWith(result)) {
@@ -113,8 +113,8 @@
                 newOption.className += 'switcheroo-option';
                 //if (index === 0) { newOption.className += ' switcheroo-selected'; }
                 newOption.innerHTML = (this.params.showCategories ? option.category + ': ' : '') + option.name;
-                Switcheroo.searchResults.appendChild(newOption);
-                Switcheroo.currentSearchResults.push({
+                this.searchResults.appendChild(newOption);
+                this.currentSearchResults.push({
                             element: newOption,
                             option: option
                         });
@@ -213,7 +213,7 @@
 
     Switcheroo.prototype.navigate = function(direction) {
        // Get the list of elements
-       var elementList = Switcheroo.currentSearchResults;
+       var elementList = this.currentSearchResults;
        // Get min/max/position
        var position = -1;
        var min = 0;
@@ -227,16 +227,16 @@
        // Execute direction change
        switch(direction) {
             case "ArrowDown":
-                Switcheroo.setSelectedResult(position !== max ? position + 1 : 0);
+                this.setSelectedResult(position !== max ? position + 1 : 0);
                 break;
             case "ArrowUp":
-                Switcheroo.setSelectedResult(position > 0 ? position - 1 : elementList.length - 1);
+                this.setSelectedResult(position > 0 ? position - 1 : elementList.length - 1);
                 break;
        }
     }
 
     Switcheroo.prototype.setSelectedResult = function(position) {
-        var elementList = Switcheroo.currentSearchResults;
+        var elementList = this.currentSearchResults;
 
         if(position < 0) {
             // Remove highlight
@@ -251,18 +251,22 @@
             });
             // Set new selected result
             elementList[position].element.classList.add('switcheroo-selected');
-            Switcheroo.currentlySelectedResult = elementList[position];
+            this.currentlySelectedResult = elementList[position];
         }
     }
 
     Switcheroo.prototype.selectResult = function() {
-        var result = Switcheroo.currentlySelectedResult;
+        var result = this.currentlySelectedResult;
         if(!result) {return;}
 
         // Call action is exists and is function
         var functionCheck = {};
         if(result.option.action && functionCheck.toString.call(result.option.action === '[object Function]')) {
             result.option.action(result.option);
+        }
+
+        if(this.params.closeOnSelect) {
+            this.close();
         }
     }
 
