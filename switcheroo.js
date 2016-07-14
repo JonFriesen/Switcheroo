@@ -104,23 +104,52 @@
     };
 
     Switcheroo.prototype.updateSearchResults = function(result) {
+
+        var sortResults = function(resultList) {
+            var sortByName = function(a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                return 0;
+            }
+            var sortByCategory = function(a, b) {
+                if (a.category < b.category) {
+                    return -1;
+                }
+                if (a.category > b.category) {
+                    return 1;
+                }
+                return 0;
+            }
+
+            var sortedResultList = resultList.sort(sortByName);
+            if (this.params.showCategories && this.params.prioritizeCategoricalSort) {
+                sortedResultList = sortedResultList.sort(sortByCategory);
+            }
+            return sortedResultList;
+
+        }.bind(this);
+
          this.searchResults.innerHTML = '';
          this.currentSearchResults = [];
          if (!result || result === '') { return; }
-         this.optionData.forEach(function(option, index) {
-            if (option.name.startsWith(result)) {
-                var newOption = document.createElement('label');
-                newOption.className += 'switcheroo-option';
-                //if (index === 0) { newOption.className += ' switcheroo-selected'; }
-                newOption.innerHTML = (this.params.showCategories ? option.category + ': ' : '') + option.name;
-                this.searchResults.appendChild(newOption);
-                this.currentSearchResults.push({
-                            element: newOption,
-                            option: option
-                        });
-            }
+         var resultList = this.optionData.filter(function(option, index) {
+            return option.name.startsWith(result) || (this.params.showCategories && option.category.startsWith(result));
          }.bind(this));
 
+         resultList = sortResults(resultList);
+
+        resultList.forEach(function(option, index){
+            var newOption = document.createElement('label');
+            newOption.className += 'switcheroo-option';
+            this.setSelectedResult(0);
+            newOption.innerHTML = (this.params.showCategories ? option.category + ': ' : '') + option.name;
+            this.searchResults.appendChild(newOption);
+            this.currentSearchResults.push({ element: newOption, option: option });
+        }.bind(this));
     };
 
     Switcheroo.prototype.getData = function() {
