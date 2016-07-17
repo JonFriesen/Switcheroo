@@ -1,55 +1,190 @@
-<html>
-    <head>
-        <title>Switcheroo Sandbox</title>
-        <script src="switcheroo.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Switcheroo Documentation & Demo Site</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+
+    #user {
+        width: 350px;
+        padding: 10px;
+    }
+
+    #userLabels {
+        width: 120px;
+        /*height: 200px;*/
+        /*background: red;*/
+        float: left;
+
+    }
+
+    #userLabels label {
+        display: block;
+        text-align: right;
+        padding-top: 9px;
+    }
+
+    #userFields {
+        margin-left: 130px;
+    }
+
+    .navbar {
+        z-index: unset;
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Switcheroo</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="docs.html">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/JonFriesen/Switcheroo">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1>Switcheroo</h1>
+                <p class="lead">Empower your power users</p>
+                <p>
+                    <b>Switcheroo is a fuzzy search solution that helps your users navigate your web application faster.</b> Your users are everything to your business and let's face it, sometimes putting all of the functionality at a single click just isn't possible, that's where Switcheroo makes your users lives awesome! With a quick key command or button click your users can find what they need fast. No searching through menus, no navigating through multiple pages, just type, select, done.
+                </p>
+                <p class="lead">You can <button type="button" class="btn btn-default" onclick="Switcheroo.open()">Click Here</button> or <button type="button" class="btn btn-default" onclick="Switcheroo.open()">Ctrl+Shift+F</button> to try it out</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Demo User</h2>
+                <div id="user">
+                    <div id="userLabels">
+                        <label>First Name</label>
+                        <label>Last Name</label>
+                        <label>Email</label>
+                        <label>Gender</label>
+                        <label>Phone Number</label>
+                        <label>Address</label>
+                        <label>City</label>
+                    </div>
+                    <div id="userFields">
+                        <input class="form-control" disabled type=text id="first_name"></input>
+                        <input class="form-control" disabled type=text id="last_name"></input>
+                        <input class="form-control" disabled type=text id="email"></input>
+                        <input class="form-control" disabled type=text id="gender"></input>
+                        <input class="form-control" disabled type=text id="phone_number"></input>
+                        <input class="form-control" disabled type=text id="address"></input>
+                        <input class="form-control" disabled type=text id="city"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery Version 1.11.1 -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Switcheroo JS file -->
+    <script src="switcheroo.js"></script>
         <script>
             window.onload = function() {
-                var genericAction = function(myObject) {
-                    alert(myObject.message);
+                var getJSON = function(url, callback) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("get", url, true);
+                    xhr.responseType = "json";
+                    xhr.onload = function() {
+                      var status = xhr.status;
+                      if (status == 200) {
+                        callback(null, xhr.response);
+                      } else {
+                        callback(status);
+                      }
+                    };
+                    xhr.send();
                 };
-                this.data = [
-                    {
-                        category: 'friend',
-                        name: 'fran',
-                        message: 'hello friends',
-                        action: genericAction
-                    },
-                    {
-                        category: 'friend',
-                        name: 'danny',
-                        message: 'hello friends',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'dad',
-                        message: 'hello familys',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'don',
-                        message: 'hello familys',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'daniel',
-                        message: 'hello familys',
-                        action: genericAction
-                    }
-                ];
-                this.Switcheroo = new Switcheroo({
-                    data: this.data,
-                    keyBindings: {
-                        open: ['Control','Shift','F'],
-                        close: ['Escape']
-                    }
-                 });
+
+                getJSON('https://gist.githubusercontent.com/JonFriesen/c186adc6935a1b0bf9460895e612d2eb/raw/494a504457c6f8eb05b3aea73f20d285228424ae/users.json',
+                    function(err, data) {
+
+                    var userAction = function(selectedUser) {
+                        for (var userProp in selectedUser.userObj) {
+                            if ($('#' + userProp).length) {
+                                $('#' + userProp).val(selectedUser.userObj[userProp]);
+                            }
+                        }
+                    };
+
+                    var userData = data.map(function(user){
+                        return {
+                            category: 'user',
+                            name: user.first_name + ' ' + user.last_name,
+                            userObj: user,
+                            action: userAction
+                        };
+                    });
+
+                    this.Switcheroo = new Switcheroo({
+                        data: userData,
+                        keyBindings: {
+                            open: ['Control','Shift','F'],
+                            close: ['Escape']
+                        }
+                    });
+
+                }.bind(this));
             }
         </script>
         <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-    </body>
+
+</body>
+
 </html>
