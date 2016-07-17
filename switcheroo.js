@@ -2,8 +2,12 @@
 
 (function(window){
     Switcheroo = function(params) {
+
+        // start in closed state
+        this.isOpen = false;
+
+        // load user data
         this.optionData = params.data;
-        this.isOpen = true;
         this.params = {
             data: [],
             keyBindings: {
@@ -16,7 +20,8 @@
             },
             showCategories: true,
             prioritizeCategoricalSort: true,
-            closeOnSelect: true
+            closeOnSelect: true,
+            caseSensitive: false
         };
 
         function setUserParams(defaultParams, userParams) {
@@ -36,6 +41,7 @@
         // Switcheroo Container
         var switcherooContainer = document.createElement('div');
         switcherooContainer.setAttribute('id', 'switcheroo');
+        switcherooContainer.style.display = 'none';
         this.switcherooContainer = switcherooContainer;
         document.body.appendChild(this.switcherooContainer);
 
@@ -137,7 +143,11 @@
          this.currentSearchResults = [];
          if (!result || result === '') { return; }
          var resultList = this.optionData.filter(function(option, index) {
-            return option.name.startsWith(result) || (this.params.showCategories && option.category.startsWith(result));
+            var optionName = !this.params.caseSensitive ? option.name.toLowerCase() : option.name;
+            var optionCategory = !this.params.caseSensitive ? option.category.toLowerCase() : option.category;
+            var typedResult = !this.params.caseSensitive ? result.toLowerCase() : result;
+
+            return optionName.startsWith(typedResult) || (this.params.showCategories && optionCategory.startsWith(typedResult));
          }.bind(this));
 
          resultList = sortResults(resultList);
