@@ -1,60 +1,60 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Switcheroo Sandbox</title>
-        <style>
+<head>
+    <title>Switcheroo Sandbox</title>
+    <style>
             body {
                 background-image: url('jon.png');
             }
-        </style>
-        <script src="switcheroo.js"></script>
-        <script>
+    </style>
+    <script src="switcheroo.js">
+    </script>
+    <script>
             window.onload = function() {
-                var genericAction = function(myObject) {
-                    alert(myObject.message);
+              var getJSON = function(url, callback) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("get", url, true);
+                    xhr.responseType = "json";
+                    xhr.onload = function() {
+                      var status = xhr.status;
+                      if (status == 200) {
+                        callback(null, xhr.response);
+                      } else {
+                        callback(status);
+                      }
+                    };
+                    xhr.send();
                 };
-                this.data = [
-                    {
-                        category: 'friend',
-                        name: 'fran',
-                        message: 'hello friends',
-                        action: genericAction
-                    },
-                    {
-                        category: 'friend',
-                        name: 'danny',
-                        message: 'hello friends',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'dad',
-                        message: 'hello familys',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'don',
-                        message: 'hello familys',
-                        action: genericAction
-                    },
-                    {
-                        category: 'family',
-                        name: 'daniel',
-                        message: 'hello familys',
-                        action: genericAction
-                    }
-                ];
-                this.Switcheroo = new Switcheroo({
-                    data: this.data,
-                    keyBindings: {
-                        open: ['Control','Shift','F'],
-                        close: ['Escape']
-                    }
-                 });
+
+                getJSON('https://gist.githubusercontent.com/JonFriesen/c186adc6935a1b0bf9460895e612d2eb/raw/494a504457c6f8eb05b3aea73f20d285228424ae/users.json',
+                    function(err, data) {
+
+                    var userAction = function(selectedUser) {
+                       alert(selectedUser); 
+                    };
+
+                    var userData = data.map(function(user){
+                        return {
+                            category: 'user',
+                            name: user.first_name + ' ' + user.last_name,
+                            userObj: user,
+                            action: userAction
+                        };
+                    });
+
+                    this.Switcheroo = new Switcheroo({
+                        data: userData,
+                        keyBindings: {
+                            open: ['Control','Shift','F'],
+                            close: ['Escape']
+                        }
+                    });
+
+                }.bind(this));  
             }
-        </script>
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-    </body>
+    </script>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+</body>
 </html>
