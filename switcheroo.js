@@ -275,6 +275,22 @@
     }
 
     Switcheroo.prototype.setSelectedResult = function(position) {
+
+        function scrollToElem(elem, parent) {
+
+            var elementTopCoord = elem.getBoundingClientRect().top;
+            var elementBottomCoord = elem.getBoundingClientRect().bottom;
+
+            var parentTopCoord = parent.getBoundingClientRect().top;
+            var parentBottomCoord = parent.getBoundingClientRect().bottom;
+
+            var isInView = elementTopCoord >= parentTopCoord && elementBottomCoord <= parentBottomCoord;
+
+           if (elem && elem.scrollIntoView && !isInView) {
+               elem.scrollIntoView();
+           }
+        }
+
         var elementList = this.currentSearchResults;
 
         if(position < 0) {
@@ -290,6 +306,7 @@
             });
             // Set new selected result
             elementList[position].element.classList.add('switcheroo-selected');
+            scrollToElem(elementList[position].element, this.searchResults);
             this.currentlySelectedResult = elementList[position];
         }
     }
