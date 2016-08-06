@@ -59,7 +59,8 @@
     display: block;
 }
 
-.switcheroo-selected {
+.switcheroo-selected,
+.switcheroo-option:hover {
     color: #d5d6d8;
 }
 

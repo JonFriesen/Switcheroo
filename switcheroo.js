@@ -157,8 +157,15 @@
             newOption.className += 'switcheroo-option';
             this.setSelectedResult(0);
             newOption.innerHTML = (this.params.showCategories ? option.category + ': ' : '') + option.name;
+
+            var resultObj = { element: newOption, option: option }
+            newOption.onclick = function() {
+                this.currentlySelectedResult = resultObj;
+                this.selectResult();
+            }.bind(this);
+
             this.searchResults.appendChild(newOption);
-            this.currentSearchResults.push({ element: newOption, option: option });
+            this.currentSearchResults.push(resultObj);
         }.bind(this));
     };
 
